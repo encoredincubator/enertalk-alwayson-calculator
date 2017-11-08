@@ -3,12 +3,12 @@ const AlwaysOnCalculator = require('./index');
 
 // TODO(yongdamsh): Prompt user to enter access token and site hash
 const option = {
-  accessToken: '1e4ecafac2672c9edb417cd0941ba24caba597640b2f9d587ffb94f1b9357c65698c0b108275480fad671d83318fceb9e037a41c6ed025f0399e5a8ded0667fa',
+  accessToken: '',
 };
-const timezone = 'US/Pacific';
+const timezone = 'US/Pacific';  // Change if needed
 const setting = {
-  siteHash: 'dab08974',
-  baseTime: moment().tz(timezone),
+  siteHash: '',
+  baseTime: moment().tz(timezone),  // Change if needed
   timezone,
 };
 
