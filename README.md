@@ -31,14 +31,14 @@ The custom filter function should conform a following input/output signiture
 
 ([UsageItem], Setting) => [UsageItem]
 
-input: array of UsageItem
+input: array of UsageItem  
 output: array of filtered UsageItem
 
-And each parameter's type is
-{Object} UageItem
+And each parameter's type is,  
+{Object} UageItem  
   - {Number} timestamp
   - {Number} usage
-{Object} Setting
+{Object} Setting  
   - {String} timezone
   
   
