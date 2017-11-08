@@ -20,10 +20,6 @@ test('pass the validation', () => {
   })).not.toThrow();
 });
 
-function createThenableMockFn() {
-  return jest.fn().mockReturnValue(Promise.resolve());
-}
-
 function getInstance() {
   const option = {
     accessToken: 'abcd',
@@ -50,7 +46,7 @@ test('throw error by missing siteHash', () => {
 test('period option', () => {
   const instance = getInstance();
 
-  instance.getUsages = createThenableMockFn();
+  instance.getUsages = jest.fn().mockReturnValue(Promise.resolve());
   instance.calculate({
     siteHash: 'site',
     baseTime: moment.tz('2017-11-01', 'US/Pacific'),
@@ -90,7 +86,7 @@ describe('calculation logic', () => {
     ];
 
     expect(AlwaysOnCalculator.filterSleepTime(items, timezone)).toEqual([
-      { timestamp: moment.tz('2017-11-08 22:01', timezone).valueOf() }, // included
+      { timestamp: moment.tz('2017-11-08 22:01', timezone).valueOf() },
       { timestamp: moment.tz('2017-11-08 05:00', timezone).valueOf() },
       { timestamp: moment.tz('2017-11-08 05:59', timezone).valueOf() },
     ]);
