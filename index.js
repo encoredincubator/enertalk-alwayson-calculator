@@ -1,4 +1,3 @@
-const axios = require('axios');
 const EnerTalkAPIClient = require('enertalk-api-client');
 const moment = require('moment-timezone');
 
@@ -34,7 +33,7 @@ class AlwaysOnCalculator {
     }
 
     if (!(baseTime instanceof Date) && !(baseTime instanceof moment) && !isFinite(baseTime)) {
-      throw new Error('\'baseTime\' should be a timestamp or a moment instance');
+      throw new Error('\'baseTime\' should be a timestamp, Date or a moment instance');
     }
 
     if (!siteHash || typeof siteHash !== 'string') {
@@ -228,7 +227,7 @@ class AlwaysOnCalculator {
 
   /*
       {Object} option: The option to setup ENERTALK API client
-        - {Moment instance | Number} baseTime: (required) Base point to start querying data
+        - {Moment instance | Date instance | Number} baseTime: (required) Base point to start querying data
         - {String} timezone: (optional) Default to 'US/Pacific'
         - {String} siteHash: (required) Target site to calculate
    */
@@ -240,6 +239,8 @@ class AlwaysOnCalculator {
       baseTime,
       timezone = 'US/Pacific',
     } = setting;
+    // TODO(yongdamsh): Fetch site information using API client to obtain a timezone
+    // Then the timezone setting can be removed
     const periodOption = {
       start: moment.tz(baseTime, timezone).subtract(1, 'month').valueOf(),
       end: moment.tz(baseTime, timezone).valueOf(),
@@ -261,7 +262,6 @@ class AlwaysOnCalculator {
         };
       })
       .catch((error) => {
-        console.log(error);
         if (error.response) {
           return Promsie.reject(error.response.data);
         }
