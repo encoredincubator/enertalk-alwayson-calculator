@@ -6,7 +6,6 @@ class AlwaysOnCalculator {
     const {
       apiClient,
       accessToken,
-      baseTime,
     } = option;
 
     if (!apiClient && !accessToken) {
@@ -28,11 +27,7 @@ class AlwaysOnCalculator {
       siteHash,
     } = option;
 
-    if (!baseTime) {
-      throw new Error('\'baseTime\' is required');
-    }
-
-    if (!(baseTime instanceof Date) && !(baseTime instanceof moment) && !isFinite(baseTime)) {
+    if (baseTime && !(baseTime instanceof Date || baseTime instanceof moment || isFinite(baseTime))) {
       throw new Error('\'baseTime\' should be a timestamp, Date or a moment instance');
     }
 
@@ -211,13 +206,21 @@ class AlwaysOnCalculator {
     });
   }
 
+  getTimezone(siteHash, timezone) {
+    if (timezone) {
+      return Promise.resolve(timezone);
+    }
+
+    return this.apiClient.getSite(siteHash)
+      .then(response => response.data.timezone);
+  }
+
   getUsages(siteHash, periodOption) {
     return this.apiClient.periodicUsagesBySite(siteHash, periodOption)
       .then(response => response.data);
   }
 
-  runCalculation(data, setting) {
-    const items = AlwaysOnCalculator.pickItems(data);
+  runCalculation(items, setting) {
     const filteredItems = this.filters.reduce((itemsInFiltering, filterFn) =>
       filterFn(itemsInFiltering, setting), items);
     const average = AlwaysOnCalculator.computeAverage(filteredItems);
@@ -236,28 +239,44 @@ class AlwaysOnCalculator {
 
     const {
       siteHash,
+      timezone,
       baseTime,
-      timezone = 'US/Pacific',
     } = setting;
-    // TODO(yongdamsh): Fetch site information using API client to obtain a timezone
-    // Then the timezone setting can be removed
-    const periodOption = {
-      start: moment.tz(baseTime, timezone).subtract(1, 'month').valueOf(),
-      end: moment.tz(baseTime, timezone).valueOf(),
-      period: '15min',
-    };
 
-    return this.getUsages(setting.siteHash, periodOption)
-      .then((data) => {
-        const usage = this.runCalculation(data, setting);
-
-        // TODO(yongdamsh): Return start, end information based on items which has data
-        return {
-          start: periodOption.start,
-          end: periodOption.end,
+    return this.getTimezone(siteHash, timezone)
+      .then((timezone) => {
+        const baseTimeAsDate = baseTime ? moment.tz(baseTime, timezone) :
+          moment().tz(timezone);
+        const periodOption = {
+          start: baseTimeAsDate.clone().subtract(1, 'month').valueOf(),
+          end: baseTimeAsDate.valueOf(),
           period: '15min',
-          siteHash,
-          timezone,
+        };
+
+        return this.getUsages(siteHash, periodOption);
+      })
+      .then((data) => {
+        const items = AlwaysOnCalculator.pickItems(data);
+        const period = '15min';
+
+        // 15min data count is less than 7 days
+        if (items.length < 96 * 7) {
+          return {
+            start: null,
+            end: null,
+            period,
+            usage: 0,
+          };
+        }
+
+        const start = items[0].timestamp;
+        const end = items[items.length - 1].timestamp + 900000;
+        const usage = this.runCalculation(items, setting);
+
+        return {
+          start,
+          end,
+          period,
           usage,
         };
       })

@@ -2,11 +2,19 @@ const moment = require('moment-timezone');
 const AlwaysOnCalculator = require('./index');
 const dataOfOneMonth = require('./fixtures/sample15minOfOneMonth.json');
 
+function createThenableMock(response) {
+  return jest.fn().mockReturnValue(Promise.resolve(response));
+}
+
 function getInstance() {
   const option = {
     accessToken: 'abcd',
   };
   const instance = new AlwaysOnCalculator(option);
+
+  instance.getTimezone = createThenableMock('US/Pacific');
+  instance.getUsages = createThenableMock({ items: [] });
+
   return instance;
 }
 
@@ -58,36 +66,34 @@ test('prevent an invalid custom filter', () => {
   expect(() => instance.setFilters(invalidFilter)).toThrow();
 });
 
-test('throw error by missing baseTime', () => {
+test('baseTime is optional', () => {
   const instance = getInstance();
   expect(() => instance.calculate({
-    baseTime: null,
-  })).toThrow();
+    siteHash: 'abcd',
+  })).not.toThrow();
 });
 
 test('throw error by missing siteHash', () => {
   const instance = getInstance();
   expect(() => instance.calculate({
-    baseTime: new Date(),
     siteHash: null,
   })).toThrow();
 });
 
-test('period option', () => {
+test('get timezone and usages before performing the calculation', () => {
   const instance = getInstance();
 
-  instance.getUsages = jest.fn().mockReturnValue(Promise.resolve());
-  instance.calculate({
+  return instance.calculate({
     siteHash: 'site',
     baseTime: moment.tz('2017-11-01', 'US/Pacific'),
-    timezone: 'US/Pacific',
+  }).then(() => {
+    expect(instance.getTimezone).toBeCalledWith('site', undefined);
+    expect(instance.getUsages).toBeCalledWith('site', expect.objectContaining({
+      start: expect.any(Number),
+      end: expect.any(Number),
+      period: '15min',
+    }));
   });
-
-  expect(instance.getUsages).toBeCalledWith('site', expect.objectContaining({
-    start: expect.any(Number),
-    end: expect.any(Number),
-    period: '15min',
-  }));
 });
 
 describe('calculation logic', () => {

@@ -5,21 +5,47 @@
 
 ### Installation
 Install 'enertalk-alwayson-calculator' package via NPM or Yarn.
-
+```sh
+> npm install enertalk-alwayson-calculator
+or
+> yarn add enertalk-alwayson-calculator
+```
 
 ### Initialize the calculator
 - Import the package
+
+```js
+const AlwaysOnCalculator = require('enertalk-alwayson-calculator');
+```
+
 - Create a new instance with option
 
-> NOTE: You can use existing ENERTALK API client instance.   
-> To use it, just pass a 'apiClient' option   
+```js
+const instance = new AlwaysOnCalculator({
+  accessToken: 'yourAccessToken'
+});
+
+// or inject existing API client instance
+const myClient = new EnerTalkAPIClient({ ... });
+const instance = new AlwaysOnCalculator({
+  apiClient: myClient,
+});
+```
 
 
 ### Execute the 'calculate' method with setting
-- 'baseTime' and 'siteHash' is required
+- `siteHash` is required
+
+```js
+instance.calculate({
+  siteHash: 'yourSiteHash',
+  baseTime: Date.now(), // optional
+});
+```
 
 > NOTE: The 'baseTime' is end of period for periodic usage API.  
 > And start will be one month before the 'baseTime'.   
+> If the `baseTime` is not passed, it has the current time as the default.  
 
 
 ### [Advanced] Use your own filters
@@ -29,33 +55,44 @@ The filter calculates an average of minimum usages of each day.
 If you know more improved logic, you can replace the filter by using 'setFilters' method.
 The custom filter function should conform a following input/output signiture
 
+```
 ([UsageItem], Setting) => [UsageItem]
 
 input: array of UsageItem  
 output: array of filtered UsageItem
 
-And each parameter's type is,  
+And types are below,  
+
 {Object} UageItem  
   - {Number} timestamp
   - {Number} usage
+
 {Object} Setting  
   - {String} timezone
-  
-  
+```
+
  Set mutiple filters as follows,
- 
+ ```js
+ const customFilter1 = (items, setting) => items.filter(...);
+ const customFilter2 = (items, setting) => items.filter(...);
+
  calculator.setFilters(customFilter1, customFilter2, ...)
- 
- 
+ ```
+
+
  ## How to test
  To test this package, clone this repository on your local
- 
+
  ### Run unit tests
- yarn test
- 
+
+ ```sh
+ > yarn test
+ ```
+
  ### Run integration test
+
+ ```sh
  yarn calculate
- 
- > NOTE: 'accessToken' and 'siteHash' should be fulfilled in the 'integration_test.js' file  
- 
- 
+ ```
+
+ > NOTE: To execute the integration test normally, you need to obtain `accessToken` and `siteHash`  

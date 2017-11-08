@@ -8,6 +8,7 @@
     "moment-timezone": "^0.5.14"
   },
   "devDependencies": {
+    "axios": "^0.17.0",
     "jest": "^21.2.1"
   },
   "scripts": {
