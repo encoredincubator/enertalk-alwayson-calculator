@@ -1,4 +1,3 @@
-const EnerTalkAPIClient = require('enertalk-api-client');
 const moment = require('moment-timezone');
 const AlwaysOnCalculator = require('./index');
 const dataOfOneMonth = require('./fixtures/sample15minOfOneMonth.json');
@@ -56,7 +55,7 @@ test('prevent an invalid custom filter', () => {
   const instance = getInstance();
   const invalidFilter = () => 'invalid';
 
-  expect(() => instance.setFilters(myCustomFilters)).toThrow();
+  expect(() => instance.setFilters(invalidFilter)).toThrow();
 });
 
 test('throw error by missing baseTime', () => {
