@@ -16,7 +16,7 @@ Install 'enertalk-alwayson-calculator' package via NPM or Yarn.
 
 
 ### Execute the 'calculate' method with setting
-- 'baseTime' and 'siteHah' is required
+- 'baseTime' and 'siteHash' is required
 
 > NOTE: The 'baseTime' is end of period for periodic usage API.  
 > And start will be one month before the 'baseTime'.   
@@ -47,7 +47,15 @@ And each parameter's type is,
  calculator.setFilters(customFilter1, customFilter2, ...)
  
  
+ ## How to test
+ To test this package, clone this repository on your local
  
+ ### Run unit tests
+ yarn test
  
+ ### Run integration test
+ yarn calculate
+ 
+ > NOTE: 'accessToken' and 'siteHash' should be fulfilled in the 'integration_test.js' file  
  
  
