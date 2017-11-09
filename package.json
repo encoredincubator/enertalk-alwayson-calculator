@@ -15,6 +15,6 @@
   "scripts": {
     "test": "jest --watch",
     "calculate": "node integration_test",
-    "prepush": "node scripts/clear_credentials && git add . && git commit  -C HEAD --amend"
+    "precommit": "node scripts/clear_credentials && git add ."
   }
 }
