@@ -186,14 +186,14 @@ describe('calculation logic', () => {
     expect(AlwaysOnCalculator.sleepTimeFilter(dataOfOneMonth, setting).length).toBe(992);
   });
 
-  test('find consistent usages more than 3 consecutive times', () => {
+  test('consistentItemsFilter', () => {
     const items = [
       { timestamp: 1, usage: 1000 },
-      { timestamp: 2, usage: 3000 },
+      { timestamp: 2, usage: 2000 },
       { timestamp: 3, usage: 4000 }, // consistent
       { timestamp: 3, usage: 4500 }, // consistent
       { timestamp: 5, usage: 4990 }, // consistent
-      { timestamp: 6, usage: 5000 },
+      { timestamp: 6, usage: 5500 },
       { timestamp: 7, usage: 6000 },
     ];
 
@@ -204,13 +204,56 @@ describe('calculation logic', () => {
     ]);
   });
 
+  test('consistentItemsFilter should retain items if there are more than three items', () => {
+    const items = [
+      { timestamp: 1, usage: 1000 },
+      { timestamp: 2, usage: 2000 },
+      { timestamp: 3, usage: 4000 }, // consistent
+      { timestamp: 4, usage: 4100 }, // consistent
+      { timestamp: 5, usage: 4290 }, // consistent
+      { timestamp: 6, usage: 3900 }, // consistent
+      { timestamp: 7, usage: 4990 }, // consistent
+      { timestamp: 8, usage: 6000 },
+    ];
+
+    expect(AlwaysOnCalculator.consistentItemsFilter(items)).toEqual([
+      { timestamp: 3, usage: 4000 },
+      { timestamp: 4, usage: 4100 },
+      { timestamp: 5, usage: 4290 },
+      { timestamp: 6, usage: 3900 },
+      { timestamp: 7, usage: 4990 },
+    ]);
+  });
+
+  test('consistentItemsFilter should save at the last index', () => {
+    const items = [
+      { timestamp: 1, usage: 1000 },
+      { timestamp: 2, usage: 2000 },
+      { timestamp: 3, usage: 4000 },
+      { timestamp: 4, usage: 5500 },
+      { timestamp: 5, usage: 7090 }, // consistent
+      { timestamp: 6, usage: 7100 }, // consistent
+      { timestamp: 7, usage: 7290 }, // consistent
+      { timestamp: 8, usage: 8000 }, // consistent
+    ];
+
+    expect(AlwaysOnCalculator.consistentItemsFilter(items)).toEqual([
+      { timestamp: 5, usage: 7090 },
+      { timestamp: 6, usage: 7100 },
+      { timestamp: 7, usage: 7290 },
+      { timestamp: 8, usage: 8000 },
+    ]);
+  });
+
   test('computeAverage', () => {
     const items = [
-      { timestamp: 1, usage: 4000 },
-      { timestamp: 2, usage: 4500 },
-      { timestamp: 3, usage: 4990 },
+      { timestamp: 3, usage: 4000 },
+      { timestamp: 4, usage: 4100 },
+      { timestamp: 5, usage: 4290 },
+      { timestamp: 6, usage: 3900 },
+      { timestamp: 7, usage: 4990 },
     ];
-    const expected = (4000 + 4500 + 4990) / 3;
+    const expected = (items.map(({ usage }) => usage).reduce((a, b) => a + b, 0)) / items.length;
 
     expect(AlwaysOnCalculator.computeAverage(items)).toBeCloseTo(expected);
   });

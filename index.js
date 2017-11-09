@@ -117,35 +117,25 @@ class AlwaysOnCalculator {
     let consistentItems = [];
     let consistentItemsInProcessing = [];
 
-    items.forEach((item) => {
+    items.forEach((item, index) => {
       if (!consistentItemsInProcessing.length) {
         consistentItemsInProcessing = [item];
-      } else if (consistentItemsInProcessing.length === 1) {
+      } else {
         const diff = getDiff(consistentItemsInProcessing[0].usage, item.usage);
 
         if (diff <= tolerance) {
           consistentItemsInProcessing.push(item);
+
+          if (index === items.length - 1 && consistentItemsInProcessing.length >= 3) {
+            consistentItems = [...consistentItemsInProcessing];
+          }
         } else {
+          if (consistentItemsInProcessing.length >= 3) {
+            consistentItems = [...consistentItemsInProcessing];
+          }
+
           consistentItemsInProcessing = [item];
         }
-      } else if (consistentItemsInProcessing.length === 2) {
-        const mergedUsages = [...consistentItemsInProcessing, item].map(({ usage }) => usage);
-        const min = Math.min(...mergedUsages);
-        const max = Math.max(...mergedUsages);
-        const diff = getDiff(min, max);
-
-        if (diff <= tolerance) {
-          consistentItemsInProcessing.push(item);
-        } else if (getDiff(consistentItemsInProcessing[1].usage, item.usage)) {
-          consistentItemsInProcessing = [consistentItemsInProcessing[1], item];
-        } else {
-          consistentItemsInProcessing = [item];
-        }
-      }
-
-      if (consistentItemsInProcessing.length === 3) {
-        consistentItems = [...consistentItemsInProcessing];
-        consistentItemsInProcessing = [];
       }
     });
 

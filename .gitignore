@@ -2,3 +2,4 @@ node_modules/
 fixtures/*
 !fixtures/sample15minOfOneMonth.json
 coverage/
+yarn-*.log

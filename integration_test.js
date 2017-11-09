@@ -16,6 +16,13 @@ function run({ accessToken, siteHash }) {
 
   const instance = new AlwaysOnCalculator(option);
 
+  // Use below method to use sleep time based filters
+  //
+  // instance.setFilters(
+  //   AlwaysOnCalculator.sleepTimeFilter,
+  //   AlwaysOnCalculator.consistentItemsFilter
+  // );
+
   return instance.calculate(setting)
     .then((result) => {
       console.log(result);
