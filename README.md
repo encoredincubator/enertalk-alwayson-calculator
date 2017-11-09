@@ -32,6 +32,7 @@ const instance = new AlwaysOnCalculator({
 });
 ```
 
+If you need more details about ENERTALK API client, see the [document](https://github.com/encoredincubator/enertalk-api-client)
 
 ### Execute the 'calculate' method with setting
 - `siteHash` is required
@@ -40,12 +41,25 @@ const instance = new AlwaysOnCalculator({
 instance.calculate({
   siteHash: 'yourSiteHash',
   baseTime: Date.now(), // optional
+  timezone: 'US/Pacific', // optional
 });
 ```
 
 > NOTE: The 'baseTime' is end of period for periodic usage API.  
 > And start will be one month before the 'baseTime'.   
-> If the `baseTime` is not passed, it has the current time as the default.  
+> - If the `baseTime` is not given, it has the current time as the default.  
+> - If the `timezone` is not given, it will be retrieved by site hash you passed  
+
+
+### Built-in filters
+#### [`minimumDailyUsageFilter`](https://github.com/encoredincubator/enertalk-alwayson-calculator/blob/master/index.js#L74-L99)
+It filters the average of the daily minimum values
+
+#### [`sleepTimeFilter`](https://github.com/encoredincubator/enertalk-alwayson-calculator/blob/master/index.js#L101-L111)
+It filters based on sleep time (22:00 ~ 06:00)
+
+#### [`consistentItemsFilter`](https://github.com/encoredincubator/enertalk-alwayson-calculator/blob/master/index.js#L113-L153)
+It filters that remain within 1Wh of fluctuation more than 3 times
 
 
 ### [Advanced] Use your own filters
@@ -76,7 +90,7 @@ And types are below,
  const customFilter1 = (items, setting) => items.filter(...);
  const customFilter2 = (items, setting) => items.filter(...);
 
- calculator.setFilters(customFilter1, customFilter2, ...)
+ instance.setFilters(customFilter1, customFilter2, ...)
  ```
 
 
@@ -95,4 +109,4 @@ And types are below,
  yarn calculate
  ```
 
- > NOTE: To execute the integration test normally, you need to obtain `accessToken` and `siteHash`  
+ > NOTE: To execute the integration test normally, you need to obtain `accessToken`  and `siteHash` first.
