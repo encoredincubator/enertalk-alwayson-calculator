@@ -9,10 +9,12 @@
   },
   "devDependencies": {
     "axios": "^0.17.0",
+    "husky": "^0.14.3",
     "jest": "^21.2.1"
   },
   "scripts": {
     "test": "jest --watch",
-    "calculate": "node integration_test"
+    "calculate": "node integration_test",
+    "precommit": "node scripts/clear_credentials && git add ."
   }
 }
