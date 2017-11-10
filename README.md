@@ -36,12 +36,22 @@ If you need more details about ENERTALK API client, see the [document](https://g
 
 ### Execute the 'calculate' method with setting
 - `siteHash` is required
+- The `calculate` method will return a promise
 
 ```js
 instance.calculate({
   siteHash: 'yourSiteHash',
   baseTime: Date.now(), // optional
   timezone: 'US/Pacific', // optional
+}).then((result) => {
+  const {
+    start,  // start timestamp of usage items
+    end, // end timestamp of usage items
+    period, // '15min'
+    usage,  // calculated 'always on' usage in milli watt
+  } = result;
+}).catch((error) => {
+  // Handle errors
 });
 ```
 

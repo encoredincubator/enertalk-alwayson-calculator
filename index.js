@@ -169,6 +169,9 @@ class AlwaysOnCalculator {
     this.apiClient = AlwaysOnCalculator.getInstance(option);
     this.filters = [];
     this.setFilters(AlwaysOnCalculator.minimumDailyUsageFilter);
+
+    this.setFilters = this.setFilters.bind(this);
+    this.calculate = this.calculate.bind(this);
   }
 
   /*
