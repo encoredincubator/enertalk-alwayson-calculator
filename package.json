@@ -1,20 +1,35 @@
 {
   "name": "enertalk-alwayson-calculator",
-  "version": "0.2.4",
-  "main": "index.js",
+  "version": "0.2.5",
+  "main": "build/index.js",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.17.0",
     "enertalk-api-client": "^0.6.2",
     "moment-timezone": "^0.5.14"
   },
   "devDependencies": {
-    "axios": "^0.17.0",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-jest": "^21.2.0",
+    "babel-preset-env": "^1.6.0",
     "husky": "^0.14.3",
     "jest": "^21.2.1"
   },
   "scripts": {
     "test": "jest --watch",
     "calculate": "node integration_test",
-    "precommit": "node scripts/clear_credentials && git add ."
+    "precommit": "node scripts/clear_credentials && yarn build && git add .",
+    "build": "babel index.js --out-dir build"
+  },
+  "jest": {
+    "transform": {
+      ".*": "<rootDir>/node_modules/babel-jest"
+    },
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "es6"
+    ]
   }
 }
