@@ -1,4 +1,4 @@
-const EnerTalkAPIClient = require('enertalk-api-client');
+const EnerTalkAPIClient = require('enertalk-api-client/build');
 const moment = require('moment-timezone');
 
 class AlwaysOnCalculator {
