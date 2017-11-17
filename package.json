@@ -18,9 +18,9 @@
   },
   "scripts": {
     "test": "jest --watch",
-    "calculate": "node integration_test",
+    "calculate": "node lib/integration_test",
     "precommit": "node scripts/clear_credentials && yarn build && git add .",
-    "build": "babel index.js --out-dir build"
+    "build": "babel lib --out-dir build --ignore *test.js"
   },
   "jest": {
     "transform": {
