@@ -1,6 +1,6 @@
 {
   "name": "enertalk-alwayson-calculator",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "main": "build/index.js",
   "license": "MIT",
   "dependencies": {
