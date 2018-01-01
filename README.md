@@ -62,13 +62,13 @@ instance.calculate({
 
 
 ### Built-in filters
-#### [`minimumDailyUsageFilter`](https://github.com/encoredincubator/enertalk-alwayson-calculator/blob/master/index.js#L74-L99)
+#### [`minimumDailyUsageFilter`](https://github.com/encoredincubator/enertalk-alwayson-calculator/blob/master/lib/index.js#L74-L99)
 It filters the items with daily lowest usage
 
-#### [`sleepTimeFilter`](https://github.com/encoredincubator/enertalk-alwayson-calculator/blob/master/index.js#L101-L111)
+#### [`sleepTimeFilter`](https://github.com/encoredincubator/enertalk-alwayson-calculator/blob/master/lib/index.js#L101-L111)
 It filters the items based on sleep time (22:00 ~ 06:00)
 
-#### [`consistentItemsFilter`](https://github.com/encoredincubator/enertalk-alwayson-calculator/blob/master/index.js#L113-L153)
+#### [`consistentItemsFilter`](https://github.com/encoredincubator/enertalk-alwayson-calculator/blob/master/lib/index.js#L113-L153)
 It filters cases where the amount of usage change is less than 1Wh for three or more consecutive times
 
 
